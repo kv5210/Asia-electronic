@@ -1,0 +1,602 @@
+<html lang="fa" dir="rtl"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جستجوی محصولات</title>
+    <style>
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background-color: #f4f4f4;
+
+            margin: 0;
+
+            padding: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            height: auto;
+
+        }
+
+        h1 {
+
+            color: #333;
+
+        }
+
+        .search-container {
+
+            display: flex;
+
+            margin-bottom: 20px;
+
+        }
+
+        #searchInput {
+
+            width: 300px;
+
+            padding: 10px;
+
+            font-size: 16px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px 5px 5px 5px;
+
+            outline: none;
+
+        }
+
+        .add-product-form {
+
+     display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    width: 300px;
+
+    margin-top: 20px;
+
+}
+
+
+.add-product-form input {
+
+    padding: 10px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 5px;
+
+}
+
+
+#addProductBtn {
+
+    background-color: #28a745;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+
+}
+
+
+#addProductBtn:hover {
+
+    background-color: #218838;
+
+}
+
+
+.error-message {
+
+    color: red;
+
+    margin-top: 5px;
+
+}
+
+
+.success-message {
+
+    color: green;
+
+    margin-top: 5px;
+
+}
+
+        #searchButton {
+
+            padding: 10px 20px;
+
+            font-size: 16px;
+
+            border: 1px solid #007bff;
+
+            background-color: #007bff;
+
+            color: white;
+
+            border-radius: 5px 5px 5px 5px;
+
+            cursor: pointer;
+
+        }
+
+        #searchButton:hover {
+
+            background-color: #0056b3;
+
+        }
+
+        #results {
+
+            width: 80%;
+
+            max-width: 600px;
+
+            margin-top: 20px;
+
+        }
+
+        .product-item {
+
+            background-color: white;
+
+            padding: 10px;
+
+            margin-bottom: 10px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 5px;
+
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .product-item h3 {
+
+            margin: 0;
+
+            color: #333;
+
+        }
+
+        .product-item p {
+
+            margin: 5px 0 0;
+
+            color: #666;
+
+        }
+
+        .ac {
+
+            display: inline-block;
+
+            margin-left: 40px;
+
+
+        }
+
+        #tools {
+
+            margin-left: 35px;
+
+            padding: 10px 20px;
+
+            font-size: 16px;
+
+            border: 1px solid hsl(186, 92%, 40%);
+
+            background-color: hsl(186, 92%, 40%);
+
+            color: white;
+
+            border-radius: 5px 5px 5px 5px;
+
+            cursor: pointer;
+
+        }
+
+        #tools:hover {
+
+            background-color: hsl(186, 91%, 32%);
+
+        }
+        .add-product-form select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.add-product-form input[type="number"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.edit-btn {
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+/* اضافه کردن این استایل‌ها به بخش <style> */
+    .delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.form-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+/* استایل دکمه + */
+.add-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.add-button:hover {
+    transform: rotate(90deg);
+    background-color: #218838;
+}
+
+/* استایل مودال */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    animation: modalOpen 0.3s ease;
+}
+
+@keyframes modalOpen {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close:hover {
+    color: #555;
+}
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+}
+
+    </style>
+
+</head>
+<body>
+    <h1>جستجوی محصولات</h1>
+    <div class="search-container">
+        <a href="\tools\index.html"><button id="tools">ابزار ها</button></a>
+        <input type="text" id="searchInput" placeholder="نام محصول را وارد کنید...">
+        <button id="searchButton">جستجو</button>
+        <!-- اضافه کردن دکمه + -->
+        <button id="openModalBtn" class="add-button">+</button>
+    </div>
+
+    <!-- مودال ثبت محصول -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>ثبت محصول جدید</h2>
+            <div class="add-product-form">
+                <input type="text" id="productName" placeholder="نام محصول">
+                <select id="productnop">
+                    <option value="NPN">NPN</option>
+                    <option value="PNP">PNP</option>
+                </select>
+                <input type="number" id="productV" placeholder="ولتاژ (V)">
+                <input type="number" id="productA" placeholder="جریان (A)" step="0.1">
+                <button id="addProductBtn">ثبت محصول</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+document.getElementById('addProductBtn').addEventListener('click', async () => {            const name = document.getElementById('productName').value;
+            const nop = document.getElementById('productnop').value;
+            const voltage = document.getElementById('productV').value;
+            const a = document.getElementById('productA').value;
+
+            console.log({ name, nop, voltage, a });  // بررسی داده‌ها قبل از ارسال به سرور
+
+            // اعتبارسنجی
+            if (!name.trim() || !voltage || !a) {
+                showMessage('لطفا تمام فیلدها را پر کنید', 'error');
+                return;
+            }
+
+            if (isNaN(voltage) || voltage <= 0 || isNaN(a) || a <= 0) {
+                showMessage('مقادیر ولتاژ و جریان باید عددی و بزرگتر از صفر باشند', 'error');
+                return;
+            }
+
+             
+    try {
+        const response = await fetch('/api/transistor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, nop, voltage, a })
+                });
+
+                if (!response.ok) throw new Error('خطا در ثبت محصول');
+
+showMessage('محصول با موفقیت ثبت شد', 'success');
+modal.style.display = "none"; // بستن مودال پس از ثبت موفق
+                // ریست فرم
+                document.getElementById('productName').value = '';
+        document.getElementById('productnop').value = 'NPN';
+        document.getElementById('productV').value = '';
+        document.getElementById('productA').value = '';
+    } catch (error) {
+        showMessage(error.message, 'error');
+    }
+});
+// هندلرهای مودال
+const modal = document.getElementById("productModal");
+const openModalBtn = document.getElementById("openModalBtn");
+const closeSpan = document.getElementsByClassName("close")[0];
+
+// باز کردن مودال
+openModalBtn.onclick = () => {
+    modal.style.display = "block";
+}
+
+// بستن مودال با کلیک روی ×
+closeSpan.onclick = () => {
+    modal.style.display = "none";
+}
+
+// بستن مودال با کلیک خارج از آن
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+ // تابع نمایش پیام - اصلاح شده
+ function showMessage(message, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `${type}-message`;
+    messageDiv.textContent = message;
+
+    const container = document.querySelector('body');
+    container.prepend(messageDiv);
+
+    setTimeout(() => messageDiv.remove(), 3000);
+}
+        // اضافه کردن هندلر برای دکمه‌های ویرایش
+        document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('edit-btn')) {
+        const productId = e.target.dataset.id;
+        const productItem = e.target.closest('.product-item');
+        
+        // دریافت اطلاعات فعلی محصول
+        const currentName = productItem.querySelector('h3').textContent;
+        const currentVoltage = productItem.querySelectorAll('p.ac')[0].textContent.replace('V ||', '');
+        const currentA = productItem.querySelectorAll('p.ac')[1].textContent.replace('A ||', '');
+        const currentNop = productItem.querySelectorAll('p.ac')[2].textContent;
+
+        // ایجاد فرم ویرایش
+        const editForm = document.createElement('div');
+        editForm.innerHTML = `
+            <input type="text" value="${currentName}" class="edit-name">
+            <select class="edit-nop">
+                <option value="NPN" ${currentNop === 'NPN' ? 'selected' : ''}>NPN</option>
+                <option value="PNP" ${currentNop === 'PNP' ? 'selected' : ''}>PNP</option>
+            </select>
+            <input type="number" value="${currentVoltage}" class="edit-voltage">
+            <input type="number" value="${currentA}" class="edit-a" step="0.1">
+            <div class="form-actions">
+                <button class="save-btn">ذخیره</button>
+                <button class="cancel-btn">لغو</button>
+                <button class="delete-btn" data-id="${productId}">حذف محصول</button>
+            </div>
+        `;
+
+        // جایگزینی فرم ویرایش با محتوای قبلی
+        productItem.innerHTML = '';
+        productItem.appendChild(editForm);
+
+            // در بخش هندلر حذف
+productItem.querySelector('.delete-btn').addEventListener('click', async () => {
+    const confirmDelete = confirm('آیا از حذف این محصول مطمئن هستید؟');
+    if (!confirmDelete) return;
+
+    try {
+        const response = await fetch(`/api/transistor/${productId}`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'خطای ناشناخته');
+        }
+        
+        console.log('پاسخ سرور:', data);
+        productItem.remove();
+        showMessage(data.message, 'success');
+        
+    } catch (error) {
+        console.error('جزئیات خطا:', {
+            message: error.message,
+            productId,
+            timestamp: new Date().toISOString()
+        });
+        showMessage(`خطا: ${error.message}`, 'error');
+    }
+});
+
+        // هندلر ذخیره تغییرات
+        productItem.querySelector('.save-btn').addEventListener('click', async () => {
+            const newData = {
+                name: productItem.querySelector('.edit-name').value,
+                nop: productItem.querySelector('.edit-nop').value,
+                voltage: productItem.querySelector('.edit-voltage').value,
+                a: productItem.querySelector('.edit-a').value
+            };
+
+            try {
+                const response = await fetch(`/api/transistor/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newData)
+                });
+
+                if (!response.ok) throw new Error('خطا در ویرایش محصول');
+                
+                // بروزرسانی نمایش محصول
+                productItem.innerHTML = `
+                    <h3>${newData.name}</h3>
+                    <p class="ac">${newData.voltage}V ||</p>
+                    <p class="ac">${newData.a}A ||</p>
+                    <p class="ac">${newData.nop}</p>
+                    <button class="edit-btn" data-id="${productId}">ویرایش</button>
+                `;
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // هندلر لغو ویرایش
+        productItem.querySelector('.cancel-btn').addEventListener('click', () => {
+            productItem.innerHTML = `
+                <h3>${currentName}</h3>
+                <p class="ac">${currentVoltage}V ||</p>
+                <p class="ac">${currentA}A ||</p>
+                <p class="ac">${currentNop}</p>
+                <button class="edit-btn" data-id="${productId}">ویرایش</button>
+            `;
+        });
+    }
+});
+
+        // تابع جستجو - اصلاح شده
+        function escapeRegExp(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function searchtransistor() {
+    const searchTerm = document.getElementById('searchInput').value;
+    const response = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`);
+    const transistor = await response.json();
+
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+
+    if (transistor.length === 0) {
+        resultsDiv.innerHTML = '<p>نتیجه‌ای یافت نشد.</p>';
+    } else {
+        transistor.forEach(product => {
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product-item';
+
+            // Highlight matching text
+            let highlightedName = product.name;
+            if (searchTerm) {
+                const escapedTerm = escapeRegExp(searchTerm);
+                const regex = new RegExp(`(${escapedTerm})`, 'gi');
+                highlightedName = product.name.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            productDiv.innerHTML = `
+                <h3>${highlightedName}</h3>
+                <p class="ac">${product.voltage}V ||</p>
+                <p class="ac">${product.a}A ||</p>
+                <p class="ac">${product.nop}</p>
+                <button class="edit-btn" data-id="${product.id}">ویرایش</button>
+            `;
+            resultsDiv.appendChild(productDiv);
+        });
+    }
+}
+
+
+        // اضافه کردن رویداد کلیک به دکمه جستجو
+        document.getElementById('searchButton').addEventListener('click', searchtransistor);
+
+        // اضافه کردن رویداد Enter به نوار جستجو
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                searchtransistor();
+            }
+        });
+    </script>
+</body>
+</html>
